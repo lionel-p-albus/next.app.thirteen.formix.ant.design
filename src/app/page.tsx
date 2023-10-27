@@ -1,95 +1,81 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+import {inject, observer} from "mobx-react";
+import {TestStore} from "@/stores/TestStore";
+import {useFormik} from "formik";
+import {Button, Form, Input} from "antd";
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+import * as Yup from 'yup';
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+interface HomeProps {
+    testStore: TestStore;
 }
+
+const SignupSchema = Yup.object().shape({
+    userId: Yup.string().required('Please input your User ID!'),
+    password: Yup.string().required('Please input your Password!')
+})
+
+const Home = (props: HomeProps) => {
+    const form = useFormik({
+        initialValues: props.testStore.initForm(),
+        validationSchema: SignupSchema,
+        onSubmit: (form, {setSubmitting}) => {
+            props.testStore.onAdd(form);
+
+            setTimeout(() => {
+                alert(JSON.stringify(form, null, 2));
+                setSubmitting(false);
+            }, 400);
+        }
+    });
+
+    return (
+        <div>
+            <h1 style={{color: 'black'}}>Sign In</h1>
+            <Form
+                labelCol={{span: 8}}
+                wrapperCol={{span: 16}}
+                style={{maxWidth: 600}}
+                onFinish={form.handleSubmit}
+            >
+                <Form.Item
+                    label="User ID"
+                    name="userId"
+                    help={form.touched.userId && form.errors.userId ? form.errors.userId : ''}
+                    validateStatus={form.touched.userId && form.errors.userId ? 'error' : undefined}
+                >
+                    <Input
+                        value={form.values.userId}
+                        onChange={form.handleChange}
+                        onBlur={form.handleBlur}
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    help={form.touched.password && form.errors.password ? form.errors.password : ''}
+                    validateStatus={form.touched.password && form.errors.password ? 'error' : undefined}
+                >
+                    <Input
+                        value={form.values.password}
+                        onChange={form.handleChange}
+                        onBlur={form.handleBlur}
+                    />
+                </Form.Item>
+
+                <Form.Item wrapperCol={{offset: 8, span: 16}}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                    <Button type="primary" htmlType="reset">
+                        Reset
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
+    );
+}
+
+export default inject('testStore')(observer(Home));

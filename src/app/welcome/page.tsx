@@ -1,6 +1,18 @@
-import Test1 from "@/app/test/components/test-1/indext";
+'use client';
 
-function Test() {
+import Test1 from "@/app/welcome/components/test-1/indext";
+import {inject, observer} from "mobx-react";
+import {TestStore} from "@/stores/TestStore";
+import {useEffect} from "react";
+
+interface TestProps {
+    store?: TestStore;
+}
+const Test = (props: TestProps) => {
+    useEffect(() => props.store?.setCount(), []);
+    console.log('props.store', props.store)
+    console.log(props.store?.getCount());
+
     return (
         <div>
             <label>test</label>
@@ -9,4 +21,4 @@ function Test() {
     );
 }
 
-export default Test;
+export default inject('test')(observer(Test));
