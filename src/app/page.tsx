@@ -6,7 +6,7 @@ import {useFormik} from "formik";
 import {Button, Form, Input, Select} from "antd";
 
 import * as Yup from 'yup';
-import React from "react";
+import React, {useEffect} from "react";
 
 interface HomeProps {
     testStore: TestStore;
@@ -34,6 +34,10 @@ const Home = (props: HomeProps) => {
         }
     });
 
+    useEffect(() => {
+        console.log('form.errors', form.errors)
+    }, [form?.errors]);
+
     return (
         <div>
             <h1 style={{color: 'black'}}>Sign In</h1>
@@ -42,6 +46,7 @@ const Home = (props: HomeProps) => {
                 wrapperCol={{span: 16}}
                 style={{maxWidth: 600}}
                 onFinish={form.handleSubmit}
+                onFinishFailed={e => console.log(e)}
             >
                 <Form.Item
                     label="Title"
