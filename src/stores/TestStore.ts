@@ -19,6 +19,7 @@ export class TestStore {
 
     initForm = (): SignInForm => {
         return {
+            title: '',
             userId: '',
             password: ''
         }

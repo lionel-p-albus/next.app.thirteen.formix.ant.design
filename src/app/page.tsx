@@ -3,20 +3,24 @@
 import {inject, observer} from "mobx-react";
 import {TestStore} from "@/stores/TestStore";
 import {useFormik} from "formik";
-import {Button, Form, Input} from "antd";
+import {Button, Form, Input, Select} from "antd";
 
 import * as Yup from 'yup';
+import React from "react";
 
 interface HomeProps {
     testStore: TestStore;
 }
 
 const SignupSchema = Yup.object().shape({
+    title: Yup.string().required('Please input your Title!'),
     userId: Yup.string().required('Please input your User ID!'),
     password: Yup.string().required('Please input your Password!')
 })
 
 const Home = (props: HomeProps) => {
+    const {Option} = Select;
+
     const form = useFormik({
         initialValues: props.testStore.initForm(),
         validationSchema: SignupSchema,
@@ -39,6 +43,26 @@ const Home = (props: HomeProps) => {
                 style={{maxWidth: 600}}
                 onFinish={form.handleSubmit}
             >
+                <Form.Item
+                    label="Title"
+                    name="title"
+                    help={form.touched.title && form.errors.title ? form.errors.title : ''}
+                    validateStatus={form.touched.title && form.errors.title ? 'error' : undefined}
+                >
+                    <Select
+                        style={{width: 120}}
+                        value={form.values.title}
+                        onChange={(val) => form.setFieldValue('title', val)}
+                    >
+                        <Option value="jack">Jack</Option>
+                        <Option value="lucy">Lucy</Option>
+                        <Option value="disabled" disabled>
+                            Disabled
+                        </Option>
+                        <Option value="Yiminghe">yiminghe</Option>
+                    </Select>
+                </Form.Item>
+
                 <Form.Item
                     label="User ID"
                     name="userId"
