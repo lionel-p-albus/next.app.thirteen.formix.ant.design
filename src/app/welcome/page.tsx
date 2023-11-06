@@ -9,9 +9,9 @@ interface TestProps {
     store?: TestStore;
 }
 const Test = (props: TestProps) => {
-    useEffect(() => props.store?.setCount(), []);
-    console.log('props.store', props.store)
-    console.log(props.store?.getCount());
+    // useEffect(() => props.store?.setCount(), []);
+    // console.log('props.store', props.store)
+    // console.log(props.store?.getCount());
 
     return (
         <div>
