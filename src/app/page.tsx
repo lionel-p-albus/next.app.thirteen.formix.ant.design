@@ -6,10 +6,10 @@ import {useFormik} from "formik";
 import {Button, Form, Input, Select} from "antd";
 
 import * as Yup from 'yup';
-import React, {useEffect} from "react";
+import React, {FunctionComponent, useEffect} from "react";
 
-interface HomeProps {
-    testStore: TestStore;
+interface Props {
+    testStore?: TestStore;
 }
 
 const SignupSchema = Yup.object().shape({
@@ -18,7 +18,7 @@ const SignupSchema = Yup.object().shape({
     password: Yup.string().required('Please input your Password!')
 })
 
-const Home = (props: HomeProps) => {
+const Home = (props: Props) => {
     const {Option} = Select;
 
     const form = useFormik({
